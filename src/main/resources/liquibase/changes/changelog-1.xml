@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="mysql"/>
+<!--STUDENT TABLE-->
+    <changeSet author="irfan" id="9">
+        <createTable tableName="student">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(35)"/>
+            <column name="age" type="INT(5)"/>
+            <column name="address" type="VARCHAR(200)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+<!--CLASS TABLE-->
+    <changeSet author="irfan" id="1">
+        <createTable tableName="class">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(35)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!--TEACHER TABLE-->
+    <changeSet author="irfan" id="2">
+        <createTable tableName="teacher">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(35)"/>
+            <column name="age" type="INT(5)"/>
+            <column name="salary" type="INT(8)"/>
+        </createTable>
+    </changeSet>
+
+<!-- ATTENDANCE TABLE -->
+    <changeSet author="irfan" id="4">
+        <createTable tableName="attendance">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Attendance" type="VARCHAR(200)"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="student_id"
+                                 baseTableName="attendance"
+                                 constraintName="fk_student_1"
+                                 referencedColumnNames="id"
+                                 referencedTableName="student"/>
+    </changeSet>
+
+    <!--   TEACHER CLASS MAPPER -->
+    <changeSet author="irfan" id="7">
+        <createTable tableName="teacher_class_mapper">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="teacher_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="class_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="teacher_id"
+                                 baseTableName="teacher_class_mapper"
+                                 constraintName="fk_teacher_2"
+                                 referencedColumnNames="id"
+                                 referencedTableName="teacher"/>
+
+        <addForeignKeyConstraint baseColumnNames="class_id"
+                                 baseTableName="teacher_class_mapper"
+                                 constraintName="fk_class_3"
+                                 referencedColumnNames="id"
+                                 referencedTableName="class"/>
+    </changeSet>
+
+    <!--STUDENT CLASS MAPPER-->
+    <changeSet author="irfan" id="5">
+        <createTable tableName="student_class_mapper">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="class_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="student_id"
+                                 baseTableName="student_class_mapper"
+                                 constraintName="fk_student_2"
+                                 referencedColumnNames="id"
+                                 referencedTableName="student"/>
+
+        <addForeignKeyConstraint baseColumnNames="class_id"
+                                 baseTableName="student_class_mapper"
+                                 constraintName="fk_class_1"
+                                 referencedColumnNames="id"
+                                 referencedTableName="class"/>
+    </changeSet>
+
+    <!--SUBJECT TABLE-->
+    <changeSet author="irfan" id="3">
+        <createTable tableName="subject">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(35)"/>
+            <column name="teacher_id" type="BIGINT(5)">
+                <constraints nullable="true" foreignKeyName="fk_teacher_1" references="teacher(id)"/>
+            </column>
+        </createTable>
+
+
+    </changeSet>
+
+
+    <!--SUBJECT CLASS MAPPER-->
+    <changeSet author="irfan" id="6">
+        <createTable tableName="subject_class_mapper">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="subject_id" type="BIGINT">
+                <constraints nullable="true" foreignKeyName="fk_subject_1" referencedColumnNames="subject(id)"/>
+            </column>
+            <column name="class_id" type="BIGINT">
+                <constraints nullable="true" foreignKeyName="fk_class_2" referencedColumnNames="class(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <!--MARK-->
+    <changeSet author="irfan" id="8">
+        <createTable tableName="mark">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="student_class_mapper_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_class_mapper_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mark" type="INT(5)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="student_class_mapper_id"
+                                 baseTableName="mark"
+                                 constraintName="fk_student_class_mapper_1"
+                                 referencedColumnNames="id"
+                                 referencedTableName="student_class_mapper"/>
+
+        <addForeignKeyConstraint baseColumnNames="subject_class_mapper_id"
+                                 baseTableName="mark"
+                                 constraintName="fk_subject_class_mapper_1"
+                                 referencedColumnNames="id"
+                                 referencedTableName="subject_class_mapper"/>
+
+    </changeSet>
+
+    <changeSet author="irfan" id="100">
+        <createTable tableName="marks">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="class_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mark" type="INT(5)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="student_id"
+                                 baseTableName="marks"
+                                 constraintName="fk_student_mark_1"
+                                 referencedColumnNames="id"
+                                 referencedTableName="student"/>
+
+        <addForeignKeyConstraint baseColumnNames="subject_id"
+                                 baseTableName="marks"
+                                 constraintName="fk_subject_mark_1"
+                                 referencedColumnNames="id"
+                                 referencedTableName="subject"/>
+
+        <addForeignKeyConstraint baseColumnNames="class_id"
+                                 baseTableName="marks"
+                                 constraintName="fk_class_mark_1"
+                                 referencedColumnNames="id"
+                                 referencedTableName="class"/>
+
+
+    </changeSet>
+
+</databaseChangeLog>
